@@ -7,9 +7,11 @@ import java.net.DatagramPacket;
 
 public class RecieverThread extends Thread {
     private MulticastSocket socket;
+    private Interfaz v;
 
-    public RecieverThread(MulticastSocket socket) {
+    public RecieverThread(MulticastSocket socket, Interfaz v) {
         this.socket = socket;
+        this.v = v;
     }
 
     @Override
@@ -20,7 +22,7 @@ public class RecieverThread extends Thread {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 String received = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-                System.out.println(received);
+                v.setMessage(received);
             } catch (IOException e) {
                 e.printStackTrace();
             }
