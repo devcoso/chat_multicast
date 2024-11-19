@@ -19,7 +19,7 @@ public class RecieverThread extends Thread {
                 byte[] buf = new byte[Constants.BUF_LEN];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
-                String received = new String(packet.getData(), 0, packet.getLength());
+                String received = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
                 System.out.println(received);
             } catch (IOException e) {
                 e.printStackTrace();

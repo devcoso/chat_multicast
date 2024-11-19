@@ -4,14 +4,9 @@ import chat.Constants;
 
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.crypto.Data;
-
 import java.net.InetSocketAddress;
 
 public class Server {
@@ -33,11 +28,12 @@ public class Server {
                 try {
                     DatagramPacket packet = new DatagramPacket(new byte[Constants.BUF_LEN], Constants.BUF_LEN);
                     socket.receive(packet); // Wait for a message
-                    String received = new String(packet.getData(), 0, packet.getLength());
+                    String received = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
+                    //System.out.println("Mensaje recibido: " + received);
                     if(received.contains("<JOIN>")) {
                         String[] parts = received.split("<JOIN>");
                         // Remove special characters
-                        parts[1] = parts[1].replaceAll("[^a-zA-Z0-9]", "");
+                        parts[1] = parts[1].replaceAll("[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]", "");
                         // Max 20 characters
                         String usuario = parts[1].substring(0, Math.min(parts[1].length(), 20));
                         if (usuario.length() == 0) {
