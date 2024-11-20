@@ -5,6 +5,7 @@ import chat.Constants;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import java.awt.event.ActionEvent;
@@ -17,7 +18,6 @@ public class Interfaz extends JFrame {
 
      public Interfaz(Sender sender) {
         getContentPane().setLayout(null);
-
 
         // Last message box
         jl1.setBounds(10, 60, 500, 40);
@@ -43,8 +43,19 @@ public class Interfaz extends JFrame {
         });
 
         this.setSize(500, 500);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.setLocationRelativeTo(null);
         this.setVisible(true);
+        		//Cerrar conenxion cuando se cierre la ventana
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent evt) {
+				int resp = JOptionPane.showConfirmDialog(null, "¿Desea salir del chat?", "Confirmar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if(resp == JOptionPane.YES_OPTION) {
+					sender.send("<LEAVE>" + sender.getName());
+					System.exit(0);
+				}
+			}
+		});
      }
 
     public void setMessage(String message) {

@@ -17,6 +17,10 @@ public class Sender {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void send(String message) {
         try {
             byte[] buf = message.getBytes();
