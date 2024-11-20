@@ -21,23 +21,23 @@ public class Interfaz extends JFrame {
 
         // Last message box
         jl1.setBounds(10, 60, 500, 40);
-        jl1.setFont(Constants.getFont(5));
+        jl1.setFont(Constants.getFont(20));
         getContentPane().add(jl1);
 
         // Message sender box
         jt1.setBounds(10, 10, 500, 40);
-        jt1.setFont(Constants.getFont(12));
+        jt1.setFont(Constants.getFont(20));
         getContentPane().add(jt1);    
         
         // Botton to send messsage
         JButton button = new JButton("Enviar mensaje");
-        button.setBounds(10, 100, 100, 10);
+        button.setBounds(10, 100, 100, 50);
         getContentPane().add(button);
 
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                sender.send(jt1.getText());
+                sender.sendMessage(jt1.getText());
                 jt1.setText("");
             }
         });

@@ -7,9 +7,14 @@ import java.net.InetAddress;
 
 public class Sender {
     private MulticastSocket socket;
+    private String name = "";
 
     public Sender(MulticastSocket socket) {
         this.socket = socket;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void send(String message) {
@@ -19,5 +24,9 @@ public class Sender {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendMessage(String message) {
+        send("<MESSAGE><" + name + ">" + message);
     }
 }

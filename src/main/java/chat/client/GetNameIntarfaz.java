@@ -13,6 +13,7 @@ import chat.Constants;
 public class GetNameIntarfaz extends JFrame {
 
     Boolean validated = false;
+    String name;
 
     public GetNameIntarfaz(Sender sender, MulticastSocket socket) {
         getContentPane().setLayout(null);
@@ -36,7 +37,8 @@ public class GetNameIntarfaz extends JFrame {
 
         button.addActionListener(e -> {
             sender.send("<JOIN>" + jt1.getText());
-            // Logic for no accept repeated names
+            // Logic for no accept repeated names or invalid names
+            name = jt1.getText();
             validated = true;
             //Close window
             this.dispose();
@@ -47,7 +49,7 @@ public class GetNameIntarfaz extends JFrame {
         this.setVisible(true);
     }
 
-    public void join() {
+    public String join() {
         // Wait for validation
         while (!validated) {
             try {
@@ -56,5 +58,6 @@ public class GetNameIntarfaz extends JFrame {
                 e.printStackTrace();
             }
         }
+        return name;
     }
 }

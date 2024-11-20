@@ -26,7 +26,8 @@ public class Client {
             // Join the chat
             GetNameIntarfaz getNameIntarfaz = new GetNameIntarfaz(sender, socket);
             // Wait for validation
-            getNameIntarfaz.join();
+            String name = getNameIntarfaz.join();
+            sender.setName(name);
 
             Interfaz v = new Interfaz(sender);
 
