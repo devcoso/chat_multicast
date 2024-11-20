@@ -24,12 +24,12 @@ public class Client {
             Sender sender = new Sender(socket);
 
             // Join the chat
-            GetNameIntarfaz getNameIntarfaz = new GetNameIntarfaz(sender, socket);
+            GetNameInterface getNameIntarfaz = new GetNameInterface(sender, socket);
             // Wait for validation
             String name = getNameIntarfaz.join();
             sender.setName(name);
 
-            Interfaz v = new Interfaz(sender);
+            Chat v = new Chat(sender);
 
             // Create receiver threads
             RecieverThread receiver = new RecieverThread(socket, v);

@@ -10,12 +10,12 @@ import javax.swing.JTextField;
 
 import chat.Constants;
 
-public class GetNameIntarfaz extends JFrame {
+public class GetNameInterface extends JFrame {
 
     Boolean validated = false;
     String name;
 
-    public GetNameIntarfaz(Sender sender, MulticastSocket socket) {
+    public GetNameInterface(Sender sender, MulticastSocket socket) {
         getContentPane().setLayout(null);
 
         JLabel j1 = new JLabel();

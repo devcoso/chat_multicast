@@ -7,9 +7,9 @@ import java.net.DatagramPacket;
 
 public class RecieverThread extends Thread {
     private MulticastSocket socket;
-    private Interfaz v;
+    private Chat v;
 
-    public RecieverThread(MulticastSocket socket, Interfaz v) {
+    public RecieverThread(MulticastSocket socket, Chat v) {
         this.socket = socket;
         this.v = v;
     }

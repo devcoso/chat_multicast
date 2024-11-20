@@ -11,12 +11,12 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Interfaz extends JFrame {
+public class Chat extends JFrame {
 
     JTextField jt1 = new JTextField();
     JLabel jl1 = new JLabel();
 
-     public Interfaz(Sender sender) {
+     public Chat(Sender sender) {
         getContentPane().setLayout(null);
 
         // Last message box
