@@ -5,7 +5,6 @@ import chat.Constants;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -17,6 +16,8 @@ import java.awt.BorderLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 
 public class Chat extends JFrame {
 
@@ -51,6 +52,7 @@ public class Chat extends JFrame {
         
         JTextField inputField = new JTextField();
         JButton sendButton = new JButton("Enviar");
+        sendButton.setEnabled(false);
         JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
@@ -61,9 +63,34 @@ public class Chat extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e){
                 sender.sendMessage(inputField.getText());
+                sendButton.setEnabled(false);
                 inputField.setText("");
             }
         });
+
+        //Enable false when is nothing
+        inputField.addKeyListener( new KeyListener() {
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    toggleButton();
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    toggleButton();
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    toggleButton();
+                }
+
+                private void toggleButton() {
+                    // Activar o desactivar el botón dependiendo si el texto está vacío
+                    sendButton.setEnabled(!inputField.getText().trim().isEmpty());
+                }
+            }
+        );
 
         setSize(800, 500);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
