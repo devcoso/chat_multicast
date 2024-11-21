@@ -8,7 +8,6 @@ import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 
 public class Client {
-
     public static void main(String[] args) {
         try {
             // Create a multicast socket

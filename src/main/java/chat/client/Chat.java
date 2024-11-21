@@ -2,52 +2,75 @@ package chat.client;
 
 import chat.Constants;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+
+import java.awt.BorderLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Chat extends JFrame {
 
-    JTextField jt1 = new JTextField();
-    JLabel jl1 = new JLabel();
+    private JTextArea messageLog;
+    private JTextArea userLog;
 
      public Chat(Sender sender) {
-        getContentPane().setLayout(null);
-
-        // Last message box
-        jl1.setBounds(10, 60, 500, 40);
-        jl1.setFont(Constants.getFont(20));
-        getContentPane().add(jl1);
-
-        // Message sender box
-        jt1.setBounds(10, 10, 500, 40);
-        jt1.setFont(Constants.getFont(20));
-        getContentPane().add(jt1);    
+        setTitle("Chat de " + sender.getName()); 
+        setLayout(new BorderLayout());
         
-        // Botton to send messsage
-        JButton button = new JButton("Enviar mensaje");
-        button.setBounds(10, 100, 100, 50);
-        getContentPane().add(button);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(10, 10)); // Espaciado horizontal y vertical
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Márgenes
+        add(mainPanel);
 
-        button.addActionListener(new ActionListener() {
+        messageLog = new JTextArea();
+        messageLog.setEditable(false);
+        messageLog.setFont(Constants.getFont());      
+
+        userLog = new JTextArea();
+        userLog.setEditable(false);
+        userLog.setFont(Constants.getFont());
+
+        JSplitPane outputPanel = new JSplitPane(
+            JSplitPane.HORIZONTAL_SPLIT,
+            new JScrollPane(messageLog),
+            new JScrollPane(userLog)
+        );
+        outputPanel.setDividerLocation(600);
+            
+        mainPanel.add(outputPanel, BorderLayout.CENTER);
+        
+        JTextField inputField = new JTextField();
+        JButton sendButton = new JButton("Enviar");
+        JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
+        mainPanel.add(inputPanel, BorderLayout.SOUTH);
+        inputField.setFont(Constants.getFont());
+
+        sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                sender.sendMessage(jt1.getText());
-                jt1.setText("");
+                sender.sendMessage(inputField.getText());
+                inputField.setText("");
             }
         });
 
-        this.setSize(500, 500);
-        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-        this.setVisible(true);
+        setSize(800, 500);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setLocationRelativeTo(null);
+        setVisible(true);
         		//Cerrar conenxion cuando se cierre la ventana
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
+		addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent evt) {
 				int resp = JOptionPane.showConfirmDialog(null, "¿Desea salir del chat?", "Confirmar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(resp == JOptionPane.YES_OPTION) {
@@ -58,8 +81,13 @@ public class Chat extends JFrame {
 		});
      }
 
-    public void setMessage(String message) {
-        jl1.setText(message);
+    public void addMessage(String message) {
+        messageLog.append(message + "\n");
+    }
+
+    public void updateUsers(String users) {
+        String userFormat = users.replace(",", "\n");
+        userLog.setText(userFormat);
     }
 
 }

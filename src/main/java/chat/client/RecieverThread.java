@@ -22,7 +22,13 @@ public class RecieverThread extends Thread {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 String received = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
-                v.setMessage(received);
+                
+                if (received.startsWith("<MESSAGE>")) {
+                    v.addMessage(received.substring(9));
+                } else if (received.startsWith("<USERS>")) {
+                    v.updateUsers(received.substring(7));
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

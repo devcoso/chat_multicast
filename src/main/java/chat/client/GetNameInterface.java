@@ -18,6 +18,8 @@ public class GetNameInterface extends JFrame {
     public GetNameInterface(Sender sender, MulticastSocket socket) {
         getContentPane().setLayout(null);
 
+        setTitle("Chat de " + Constants.MCAST_GROUP);
+
         JLabel j1 = new JLabel();
         j1.setText("Introduce tu nombre de usuario");
         j1.setBounds(25, 10, 300, 20);
@@ -38,13 +40,14 @@ public class GetNameInterface extends JFrame {
         button.addActionListener(e -> {
             sender.send("<JOIN>" + jt1.getText());
             // Logic for no accept repeated names or invalid names
-            name = jt1.getText();
+            name = jt1.getText().replaceAll("[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]", "");
             validated = true;
             //Close window
             this.dispose();
         });
 
         this.setSize(500, 150);
+        this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setVisible(true);
     }

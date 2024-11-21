@@ -33,7 +33,7 @@ public class Server {
                     if(received.contains("<JOIN>")) {
                         String[] parts = received.split("<JOIN>");
                         // Remove special characters
-                        //parts[1] = parts[1].replaceAll("[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]", "");
+                        parts[1] = parts[1].replaceAll("[^a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]", "");
                         // Max 20 characters
                         String usuario = parts[1].substring(0, Math.min(parts[1].length(), 20));
                         if (usuario.length() == 0) {
