@@ -30,6 +30,7 @@ public class Server {
                     socket.receive(packet); // Wait for a message
                     String received = new String(packet.getData(), 0, packet.getLength(), "UTF-8");
                     //System.out.println("Mensaje recibido: " + received);
+                    String message;
                     if(received.contains("<JOIN>")) {
                         String[] parts = received.split("<JOIN>");
                         // Remove special characters
@@ -46,6 +47,10 @@ public class Server {
                         }
                         usuarios.add(usuario);
                         System.out.println("Usuario " + usuario + " se ha unido al chat");
+                        message = "<MESSAGE><SERVIDOR>" + "Usuario " + usuario + " se ha unido al chat";
+                        byte[] buf = message.getBytes();
+                        DatagramPacket packetMessage = new DatagramPacket(buf, buf.length, group, Constants.MCAST_PORT);
+                        socket.send(packetMessage);
                     } else if(received.contains("<LEAVE>")) {
                         String[] parts = received.split("<LEAVE>");
                         // Remove special characters
@@ -54,6 +59,10 @@ public class Server {
                         String usuario = parts[1].substring(0, Math.min(parts[1].length(), 20));
                         usuarios.remove(usuario);
                         System.out.println("Usuario " + usuario + " ha abandonado el chat");
+                        message = "<MESSAGE><SERVIDOR>" + "Usuario " + usuario + " ha abandonado el chat";    
+                        byte[] buf = message.getBytes();
+                        DatagramPacket packetUsers = new DatagramPacket(buf, buf.length, group, Constants.MCAST_PORT);
+                        socket.send(packetUsers);
                     } else {
                         //System.out.println("Mensaje recibido: " + received);
                         continue;

@@ -23,8 +23,10 @@ public class Chat extends JFrame {
 
     private JTextArea messageLog;
     private JTextArea userLog;
+    private Sender sender;
 
      public Chat(Sender sender) {
+        this.sender = sender;
         setTitle("Chat de " + sender.getName()); 
         setLayout(new BorderLayout());
         
@@ -108,8 +110,16 @@ public class Chat extends JFrame {
 		});
      }
 
-    public void addMessage(String message) {
-        messageLog.append(message + "\n");
+    public void addMessage(String message, String from) {
+        messageLog.append(from + ": " + message + "\n");
+    }
+
+    public void addPrivateMessage(String message, String from, String to) {
+        if(to.equals(sender.getName())) {
+            messageLog.append(from + " te ha susurrado " + ": " + message + "\n");
+        } else if(from.equals(sender.getName())) {
+            messageLog.append("Has susurrado a " + to + ": " + message + "\n");
+        }
     }
 
     public void updateUsers(String users) {
