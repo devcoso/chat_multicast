@@ -140,11 +140,17 @@ public class Chat extends JFrame {
         userLog.setText(userFormat);
     }
 
-    public void addFile(String fileName, String from, String file) {
+    public void addFile(String fileName, String from) {
         if(!from.equals(sender.getName())) {
             messageLog.append(from + " te ha enviado un archivo " + fileName + "\n");
         } else {
             messageLog.append("Has enviado un archivo : " + fileName + "\n");
+        }
+    }
+
+    public void erroFile(String fileName, String from) {
+        if(!from.equals(sender.getName())) {
+            messageLog.append("Has tenido un error al recibir el archivo " + fileName + " de " + from +"\n");
         }
     }
 

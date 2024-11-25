@@ -55,7 +55,7 @@ public class Sender {
                if (respuesta == JFileChooser.APPROVE_OPTION) {
             File archivoSeleccionado = fileChooser.getSelectedFile();
             String randomName = UUID.randomUUID().toString();
-            long segmentSize = 1024;
+            long segmentSize = Constants.BUF_LEN / 2;
             
             try{
                 byte[] fileBytes = Files.readAllBytes(archivoSeleccionado.toPath());  // Leer el archivo como bytes
@@ -67,19 +67,19 @@ public class Sender {
                 for (int i = 0; i < segments; i++) {
                     long start = i * segmentSize;
                     long end = Math.min(size, start + segmentSize);
-                    String segment = "<SEGMENT><" + randomName + "><" + i + "><" + segments + ">"
+                    String segment = "<SEGMENT><" + randomName + "><" + (i + 1) + "><" + segments + ">"
                             + encodedFile.substring((int) start, (int) end);
                     send(segment);
                 }
+
+                send("<FILE><" 
+                    + randomName + "><" 
+                    + archivoSeleccionado.getName() + "><" 
+                    + segments + "><" 
+                    + name + ">");
             } catch(IOException e){
                 e.printStackTrace();
             }
-            // Enviar mensaje de archivo enviado
-            send("<FILE><" 
-                    + randomName + "><" 
-                    + archivoSeleccionado.getName() + "><" 
-                    + archivoSeleccionado.length() + "><" 
-                    + name + ">");
         }
     }
 

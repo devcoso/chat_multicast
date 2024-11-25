@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MulticastSocket;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.net.DatagramPacket;
@@ -15,13 +17,11 @@ public class RecieverThread extends Thread {
     private MulticastSocket socket;
     private Chat v;
     private String name;
-    private int contador = 0;
 
     public RecieverThread(MulticastSocket socket, Chat v, String name) {
         this.socket = socket;
         this.v = v;
         this.name = name;
-        this.contador = 0;  
     }
 
     @Override
@@ -52,21 +52,64 @@ public class RecieverThread extends Thread {
                     v.updateUsers(users);
                 } else if(received.startsWith("<FILE>")) {
                     String file = received.substring(6);
-                    Matcher filePattern = Pattern.compile("<([a-zA-Z0-9\\-]+)><(.*)><[0-9]+><([a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]*)>")
+                    Matcher filePattern = Pattern.compile("<([a-zA-Z0-9\\-]+)><(.*)><([0-9]+)><([a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]*)>")
                     .matcher(file);
                     if(filePattern.matches()) {
-                        v.addFile(filePattern.group(2), filePattern.group(3), filePattern.group(1));    
+                        // Extraer los grupos
+                        String fileId = filePattern.group(1);   // UUID del archivo
+                        String fileName = filePattern.group(2); // Nombre del archivo
+                        String segments = filePattern.group(3); // Total de segmentos
+                        String owner = filePattern.group(4); // Dueño del archivo
+                        if(owner.equals(name)) {
+                            v.addFile(fileName, owner);
+                            continue;
+                        }
+                        // Juntar los archivos
+                        File f = new File("");
+                        String ruta = f.getAbsolutePath();
+                        File tmpDir = new File( ruta + "\\.tmp\\" + name + "\\" + fileId + "\\");
+                        File[] files = tmpDir.listFiles();
+                        String content = "";
+                        int i = 0;
+                        for (File fileSegment : files) {
+                            i++;
+                            try {
+                                content += Files.readString(fileSegment.toPath());
+                            } catch (IOException e) {
+                               v.erroFile(fileName, owner);
+                            }
+                        }
+
+                        if(i != Integer.parseInt(segments)) {
+                            v.erroFile(fileName, owner);
+                            continue;
+                        }
+
+                        try {
+                            // Decodificar el archivo
+                            byte[] decodedFile = Base64.getDecoder().decode(content);
+                            // Crear el directorio
+                            File dir = new File(ruta + "\\files\\" + name + "\\");
+                            dir.mkdirs();
+
+                            // Crear el archivo
+                            File f3 = new File(dir, fileName);
+                            // Escribir el archivo
+                            Files.write(f3.toPath(), decodedFile);    
+                        } catch (Exception e) {
+                            v.erroFile(fileName, content);
+                        }
+
+                        v.addFile(fileName, owner);    
                     }
                 } else if (received.startsWith("<SEGMENT>")) {
                     String segment = received.substring(9);
                     //System.out.println(segment);
-                    System.out.println("Segmento recibido " + contador);
-                    contador++;
                     Matcher segmentPattern = Pattern.compile("(?s)^<([a-zA-Z0-9\\-]+)><([0-9]+)><([0-9]+)>(.+)")
                     .matcher(segment);
                     if(segmentPattern.matches()) {
                          // Extraer los grupos
-                        String segmentId = segmentPattern.group(1);   // UUID del segmento
+                        String fileID = segmentPattern.group(1);   // UUID del segmento
                         String segmentNumber = segmentPattern.group(2); // Número del segmento
                         String totalSegments = segmentPattern.group(3); // Total de segmentos
                         String segmentContent = segmentPattern.group(4); // Contenido del segmento
@@ -74,11 +117,11 @@ public class RecieverThread extends Thread {
                         // Crear la carpeta ./tmp si no existeFile f = new File("");
                         File f = new File("");
                         String ruta = f.getAbsolutePath();
-                        File tmpDir = new File( ruta + "\\.tmp\\" + name + "\\");
+                        File tmpDir = new File( ruta + "\\.tmp\\" + name + "\\" + fileID + "\\"); 
                         tmpDir.mkdirs(); // Crear la carpeta
 
                         // Generar el archivo en la carpeta tmp
-                        File file = new File(tmpDir, segmentId + "_segment_" + segmentNumber + "_of_" + totalSegments + ".txt");
+                        File file = new File(tmpDir, "_segment_" + segmentNumber + "_of_" + totalSegments + ".txt");
                         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                             // Escribir el contenido del segmento en el archivo
                             writer.write(segmentContent);  // Escribir el contenido extraído
