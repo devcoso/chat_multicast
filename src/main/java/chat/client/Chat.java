@@ -54,10 +54,16 @@ public class Chat extends JFrame {
         
         JTextField inputField = new JTextField();
         JButton sendButton = new JButton("Enviar");
+        JButton sendFileButton = new JButton("📄"); 
+        sendButton.setFont(Constants.getFont());
+        sendFileButton.setFont(Constants.getFont());
         sendButton.setEnabled(false);
         JPanel inputPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.add(sendFileButton, BorderLayout.WEST);
+        buttonPanel.add(sendButton, BorderLayout.CENTER);
         inputPanel.add(inputField, BorderLayout.CENTER);
-        inputPanel.add(sendButton, BorderLayout.EAST);
+        inputPanel.add(buttonPanel, BorderLayout.EAST);
         mainPanel.add(inputPanel, BorderLayout.SOUTH);
         inputField.setFont(Constants.getFont());
 
@@ -69,6 +75,13 @@ public class Chat extends JFrame {
                 inputField.setText("");
             }
         });
+
+        sendFileButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                sender.sendFile();
+            }
+        }); 
 
         //Enable false when is nothing
         inputField.addKeyListener( new KeyListener() {
@@ -108,7 +121,7 @@ public class Chat extends JFrame {
 				}
 			}
 		});
-     }
+    }
 
     public void addMessage(String message, String from) {
         messageLog.append(from + ": " + message + "\n");
@@ -125,6 +138,14 @@ public class Chat extends JFrame {
     public void updateUsers(String users) {
         String userFormat = users.replace(",", "\n");
         userLog.setText(userFormat);
+    }
+
+    public void addFile(String fileName, String from, String file) {
+        if(!from.equals(sender.getName())) {
+            messageLog.append(from + " te ha enviado un archivo " + fileName + "\n");
+        } else {
+            messageLog.append("Has enviado un archivo : " + fileName + "\n");
+        }
     }
 
 }

@@ -31,7 +31,7 @@ public class Client {
             Chat v = new Chat(sender);
 
             // Create receiver threads
-            RecieverThread receiver = new RecieverThread(socket, v);
+            RecieverThread receiver = new RecieverThread(socket, v, name);
             receiver.start();
             receiver.join();
         } catch (Exception e) {
