@@ -9,7 +9,6 @@ import java.util.UUID;
 import javax.swing.JFileChooser;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
